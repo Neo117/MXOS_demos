@@ -1,0 +1,7 @@
+NAME := EMW3070
+
+MODULE := EMW3070
+HOST_MCU_FAMILY := mx1270
+
+# Global includes
+GLOBAL_INCLUDES  := .

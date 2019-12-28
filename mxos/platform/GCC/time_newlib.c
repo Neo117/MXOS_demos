@@ -1,0 +1,46 @@
+/**
+ *  UNPUBLISHED PROPRIETARY SOURCE CODE
+ *  Copyright (c) 2016 MXCHIP Inc.
+ *
+ *  The contents of this file may not be disclosed to third parties, copied or
+ *  duplicated in any form, in whole or in part, without the prior written
+ *  permission of MXCHIP Corporation.
+ *
+ */
+
+#include "sys/time.h"
+#include "mxos_common.h"
+#include "mxos_system.h"
+
+int _gettimeofday( struct timeval * __p, void * __tz )
+{
+    mxos_utc_time_ms_t current_utc_time_ms = 0;
+    mxos_time_get_utc_time_ms( &current_utc_time_ms );
+
+    __p->tv_sec = current_utc_time_ms / 1000;
+    __p->tv_usec = ( current_utc_time_ms % 1000 ) * 1000;
+
+    return 0;
+}
+
+int gettimeofday( struct timeval *__restrict __p, void *__restrict __tz )
+{
+    return _gettimeofday( __p, __tz );
+}
+
+#ifndef __MBED__
+time_t time(time_t *tloc)
+{
+    mxos_utc_time_ms_t current_utc_time_ms = 0;
+    unsigned long long t;
+
+    mxos_time_get_utc_time_ms( &current_utc_time_ms );
+
+    t = current_utc_time_ms / 1000;
+
+    if (tloc)
+        *tloc = t ;
+
+    return t;
+}
+#endif

@@ -1,0 +1,7 @@
+NAME := EMC3080
+
+MODULE := EMC3080
+HOST_MCU_FAMILY := mx1400
+
+# Global includes
+GLOBAL_INCLUDES  := .

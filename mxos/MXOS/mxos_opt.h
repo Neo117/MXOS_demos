@@ -1,0 +1,362 @@
+/**
+ ******************************************************************************
+ * @file    mxos_opt.h
+ * @author  William Xu
+ * @version V1.0.0
+ * @date    22-July-2015
+ * @brief   This file provide MXOS default configurations
+ ******************************************************************************
+ *
+ *  UNPUBLISHED PROPRIETARY SOURCE CODE
+ *  Copyright (c) 2016 MXCHIP Inc.
+ *
+ *  The contents of this file may not be disclosed to third parties, copied or
+ *  duplicated in any form, in whole or in part, without the prior written
+ *  permission of MXCHIP Corporation.
+ ******************************************************************************
+ */
+
+#ifndef __MXOS_OPT_H
+#define __MXOS_OPT_H
+
+#ifndef MXOS_PREBUILT_LIBS
+#include "mxos_config.h"
+#include "module.h"
+#include "mxkit.h"
+#endif
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/******************************************************************************
+ *                            MXOS OS and APP VERSION
+ ******************************************************************************/
+
+#if !defined APP_INFO
+#define APP_INFO                                 "MXOS DEMO"
+#endif
+
+#if !defined FIRMWARE_REVISION
+#define FIRMWARE_REVISION                       "MXOS_DEMO_1_0"
+#endif
+
+#if !defined MANUFACTURER
+#define MANUFACTURER                            "MXCHIP Inc."
+#endif
+
+#if !defined SERIAL_NUMBER
+#define SERIAL_NUMBER                           "0000.0000.AT01"
+#endif
+
+#if !defined PROTOCOL
+#define PROTOCOL                                "com.mxchip.demo"
+#endif
+
+/**
+ *  MXOS_SDK_VERSION_XXX, should be defined in MakeFile
+ */
+#ifndef MXOS_SDK_VERSION_MAJOR
+#define MXOS_SDK_VERSION_MAJOR                  (4)
+#endif
+
+#ifndef MXOS_SDK_VERSION_MINOR
+#define MXOS_SDK_VERSION_MINOR                  (0)
+#endif
+
+#ifndef MXOS_SDK_VERSION_REVISION
+#define MXOS_SDK_VERSION_REVISION               (0)
+#endif
+
+/******************************************************************************
+ *                             MXOS Debug Enabler
+ ******************************************************************************/
+
+#if !defined MXOS_DEBUG_MIN_LEVEL
+#define MXOS_DEBUG_MIN_LEVEL                    MXOS_DEBUG_LEVEL_ALL
+#endif
+
+#if !defined MXOS_DEBUG_TYPES_ON
+#define MXOS_DEBUG_TYPES_ON                     MXOS_DEBUG_ON
+#endif
+
+/******************************************************************************
+ *                             MXOS Main Application
+ ******************************************************************************/
+
+/**
+ *  MXOS_DEFAULT_APPLICATION_STACK_SIZE: Application thread stack size, Default: 2048 bytes
+ */
+#if !defined MXOS_DEFAULT_APPLICATION_STACK_SIZE
+#define MXOS_DEFAULT_APPLICATION_STACK_SIZE     2048
+#endif
+
+/**
+ *  Do some MXOS initializing before main, like mxos_board_init, stdio uart init...
+ */
+#if !defined MXOS_APPLICATION
+#define MXOS_APPLICATION                        1
+#endif
+
+/**
+ *  Start standard QC test function other than application
+ */
+#if !defined MXOS_QUALITY_CONTROL_ENABLE
+#define MXOS_QUALITY_CONTROL_ENABLE             0
+#endif
+
+/******************************************************************************
+ *                             Wlan Configuration
+ ******************************************************************************/
+
+#define WIFI_CONFIG_MODE_NONE                        (0)
+#define WIFI_CONFIG_MODE_WAC                         (1)
+#define WIFI_CONFIG_MODE_SOFTAP                      (2)
+#define WIFI_CONFIG_MODE_MONITOR                     (3)
+#define WIFI_CONFIG_MODE_AWS                         (4)
+
+/**
+ *  WIFI_CONFIG_MODE: wlan configuration mode, Default: EasyLink
+ */
+#if !defined WIFI_CONFIG_MODE
+#define WIFI_CONFIG_MODE                   WIFI_CONFIG_MODE_AWS
+#endif
+
+#if WIFI_CONFIG_MODE == WIFI_CONFIG_MODE_WAC
+#define EasyLink_Needs_Reboot
+#endif
+
+#if !defined MXOS_WLAN_FORCE_OTA_ENABLE
+#define MXOS_WLAN_FORCE_OTA_ENABLE               0
+#endif
+
+#if !defined MXOS_WLAN_AUTO_CONFIG
+#define MXOS_WLAN_AUTO_CONFIG                    1
+#endif
+
+
+#if !defined MXOS_WLAN_AUTO_SOFTAP_WHEN_DISCONNECTED
+#define MXOS_WLAN_AUTO_SOFTAP_WHEN_DISCONNECTED  0
+#endif
+
+/**
+ *  EasyLink_TimeOut: Easylink configuration timeout, Default: 60 secs
+ */
+#if !defined EasyLink_TimeOut
+#define EasyLink_TimeOut                        60000
+#endif
+
+/**
+ *  EasyLink_ConnectWlan_Timeout: Connect to wlan after wlan is configured
+ *  Restart wlan configuration mode after timeout. Default: 20 seconds.
+ */
+#if !defined EasyLink_ConnectWlan_Timeout
+#define EasyLink_ConnectWlan_Timeout            20000 
+#endif
+
+/******************************************************************************
+ *                             TCPIP Stack Options
+ ******************************************************************************/
+
+/**
+ *  MXOS_CONFIG_IP_VER_PREF: On dual stack configuration how long wait for preferred stack
+ *  4 or 6
+ */
+
+#if !defined MXOS_CONFIG_IP_VER_PREF
+#define MXOS_CONFIG_IP_VER_PREF                4
+#endif
+
+/**
+ *  MXOS_CONFIG_IPV6: Enable IPv4 and IPv6 dual stack apis, Default: disabled
+ */
+#if !defined MXOS_CONFIG_IPV6
+#define MXOS_CONFIG_IPV6                        0
+#endif
+
+/**
+ *  MXOS_IPV6_NUM_ADDRESSES: Number of IPv6 addresses per interface. Default: 3
+ */
+#if !defined MXOS_IPV6_NUM_ADDRESSES
+#define MXOS_IPV6_NUM_ADDRESSES                 3
+#endif
+
+/******************************************************************************
+ *        MXOS System Functions, established by mxos_system_init()
+ ******************************************************************************/
+
+ /**
+ *  MXOS_WLAN_CONNECTION_ENABLE: Start wlan connection when MXOS system starts, 
+ *  Default: Enable
+ */
+#if !defined MXOS_WLAN_CONNECTION_ENABLE
+#define MXOS_WLAN_CONNECTION_ENABLE             1
+#endif
+
+/**
+ *  MXOS_CONFIG_EASYLINK_BTN_ENABLE: Enable EasyLink Button,
+ *  - Press to start easylink
+ *  - Long pressed  @ref MXOS_CONFIG_EASYLINK_BTN_LONG_PRESS_TIMEOUT milliseconds
+ *    to clear all settings
+ *  Default: Enable
+ */
+#if !defined MXOS_CONFIG_EASYLINK_BTN_ENABLE
+#define MXOS_CONFIG_EASYLINK_BTN_ENABLE         1
+#endif
+
+#if !defined MXOS_CONFIG_EASYLINK_BTN_IDLE_STATE
+#define MXOS_CONFIG_EASYLINK_BTN_IDLE_STATE     1
+#endif
+
+
+#if !defined MXOS_CONFIG_EASYLINK_BTN_LONG_PRESS_TIMEOUT
+#define MXOS_CONFIG_EASYLINK_BTN_LONG_PRESS_TIMEOUT         5000
+#endif
+
+/**
+ * Command line interface
+ */
+#if !defined MXOS_CLI_ENABLE
+#define MXOS_CLI_ENABLE                         1
+#endif
+
+#if !defined MXOS_CLI_THREAD_STACK_SIZE
+#define MXOS_CLI_THREAD_STACK_SIZE                          2048
+#endif
+
+/**
+ * Worker thread configuration
+ */
+#if !defined MXOS_WORKER_THREAD_STACK_SIZE
+#define MXOS_WORKER_THREAD_STACK_SIZE                       2048
+#endif
+
+/**
+ * Start a system monitor daemon, application can register some monitor
+ * points, If one of these points is not executed in a predefined period,
+ * a watchdog reset will occur.
+ */
+#if !defined MXOS_SYSTEM_MONITOR_ENABLE
+#define MXOS_SYSTEM_MONITOR_ENABLE              1
+#endif
+
+/**
+ * Add service _easylink._tcp._local. for discovery
+ */
+#if !defined MXOS_SYSTEM_DISCOVERY_ENABLE
+#define MXOS_SYSTEM_DISCOVERY_ENABLE              1
+#endif
+
+/**
+ * _easylink._tcp._local. service port
+ */
+#if !defined MXOS_SYSTEM_DISCOVERY_PORT
+#define MXOS_SYSTEM_DISCOVERY_PORT               8000
+#endif
+
+/**
+  * MXOS TCP server used for configuration and ota.
+  */
+#if !defined MXOS_CONFIG_SERVER_ENABLE
+#define MXOS_CONFIG_SERVER_ENABLE                0
+#endif
+
+#if !defined MXOS_CONFIG_SERVER_PORT
+#define MXOS_CONFIG_SERVER_PORT                 8000
+#endif
+
+#if !defined MXOS_CONFIG_SERVER_REPORT_SYSTEM_DATA
+#define MXOS_CONFIG_SERVER_REPORT_SYSTEM_DATA   MXOS_CONFIG_SERVER_ENABLE
+#endif
+
+/******************************************************************************
+ *                            Debug and Log
+ ******************************************************************************/
+
+#if !defined CONFIG_APP_DEBUG
+#define CONFIG_APP_DEBUG                       MXOS_DEBUG_ON
+#endif
+
+#if !defined CONFIG_SYSTEM_DEBUG
+#define CONFIG_SYSTEM_DEBUG                    MXOS_DEBUG_ON
+#endif
+
+#if !defined CONFIG_NET_DEBUG
+#define CONFIG_NET_DEBUG                       MXOS_DEBUG_OFF
+#endif
+
+#if !defined CONFIG_MDNS_DEBUG
+#define CONFIG_MDNS_DEBUG                      MXOS_DEBUG_OFF
+#endif
+
+#if !defined CONFIG_LWS_DEBUG
+#define CONFIG_LWS_DEBUG                       MXOS_DEBUG_OFF
+#endif
+
+#if !defined CONFIG_FORCTOTA_DEBUG
+#define CONFIG_FORCTOTA_DEBUG                  MXOS_DEBUG_OFF
+#endif
+
+
+
+/******************************************************************************
+ *                            Platform
+ ******************************************************************************/
+
+#if !defined PLATFORM_ETH_ENABLE
+#define PLATFORM_ETH_ENABLE                                0
+#endif
+
+#if !defined PLATFORM_CONFIG_EASYLINK_SOFTAP_COEXISTENCE
+#define PLATFORM_CONFIG_EASYLINK_SOFTAP_COEXISTENCE        0
+#endif
+
+#ifndef MXOS_LOG_UART 
+#define MXOS_LOG_UART MXKIT_LOG_UART
+#endif
+#ifndef MXOS_LOG_UART_BAUDRATE 
+#define MXOS_LOG_UART_BAUDRATE 115200
+#endif
+#ifndef MXOS_LOG_UART_RXD 
+#define MXOS_LOG_UART_RXD MXKIT_LOG_UART_RXD
+#endif
+#ifndef MXOS_LOG_UART_TXD 
+#define MXOS_LOG_UART_TXD MXKIT_LOG_UART_TXD
+#endif
+
+
+#ifndef MXOS_APP_UART 
+#define MXOS_APP_UART MXKIT_APP_UART
+#endif
+#ifndef MXOS_APP_UART_BAUDRATE 
+#define MXOS_APP_UART_BAUDRATE 115200
+#endif
+#ifndef MXOS_APP_UART_RXD 
+#define MXOS_APP_UART_RXD MXKIT_APP_UART_RXD
+#endif
+#ifndef MXOS_APP_UART_TXD 
+#define MXOS_APP_UART_TXD MXKIT_APP_UART_TXD
+#endif
+#ifndef MXOS_APP_UART_RTS 
+#define MXOS_APP_UART_RTS MXKIT_APP_UART_RTS
+#endif
+#ifndef MXOS_APP_UART_CTS 
+#define MXOS_APP_UART_CTS MXKIT_APP_UART_CTS
+#endif
+
+#ifndef MXOS_BOOT_PIN 
+#define MXOS_BOOT_PIN MXKIT_BOOT_PIN
+#endif
+#ifndef MXOS_STATUS_PIN 
+#define MXOS_STATUS_PIN MXKIT_STATUS_PIN
+#endif
+#ifndef MXOS_ELINK_PIN 
+#define MXOS_ELINK_PIN MXKIT_ELINK_PIN
+#endif
+
+#ifdef __cplusplus
+} /*extern "C" */
+#endif
+
+#endif //__MXOS_OPT_H
