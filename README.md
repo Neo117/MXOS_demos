@@ -1,4 +1,4 @@
-mico-demos
+MXOS-demos
 ====
 包含：一系列基于MiCO的示例程序。
 
