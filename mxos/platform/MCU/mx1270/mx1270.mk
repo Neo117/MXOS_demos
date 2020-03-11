@@ -45,27 +45,7 @@ appstart.c \
 $(NAME)_INCLUDES := \
 ../../../MXOS/RTOS/FreeRTOS/mxos
 
-# Libraries
-$(NAME)_PREBUILT_LIBRARY := \
-libraries/arch_armv7m.a \
-libraries/cli.a \
-libraries/kernel_init.a \
-libraries/libasr_wifi.a \
-libraries/mcu_asr5501.a \
-libraries/netmgr.a \
-libraries/osal_aos.a \
-libraries/ulog.a \
-libraries/yloop.a \
-libraries/board_asr5501.a \
-libraries/debug.a \
-libraries/lwip.a \
-libraries/mxos.a \
-libraries/newlib_stub.a \
-libraries/rhino.a \
-libraries/vfs.a \
-libraries/alicrypto.a \
-libraries/ls_osa.a \
-libraries/wifi_station.a
+$(NAME)_COMPONENTS := platform/MCU/mx1270/alisdk
 
 DEFAULT_LINK_SCRIPT := gcc_a0v2.ld
 

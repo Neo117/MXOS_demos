@@ -285,6 +285,7 @@ SECTIONS
     irq_clear_pending = 0x10110aa5;
     irq_register = 0x10110ac1;
     irq_unregister = 0x10110b0d;
+    _vsscanf = 0x10110ffd;
     _char2num = 0x10110b2d;
     _2char2dec = 0x10110b5d;
     _2char2hex = 0x10110bd1;

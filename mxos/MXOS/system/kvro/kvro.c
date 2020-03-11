@@ -223,6 +223,8 @@ static int kvro_init_internal(void)
                 continue;
             }
             g_kvro_mgr.block_info[i].state = hdr.state;
+        } else {
+            g_kvro_mgr.block_info[i].state = KV_BLOCK_STATE_CLEAN;
         }
     }
 
@@ -547,6 +549,8 @@ void handle_kvro_cmd(int argc, char **argv)
     {
         for (i = 0; i < KV_BLOCK_NUMS; i++)
         {
+            if (INVALID_BLK_STATE(g_kvro_mgr.block_info[i].state))
+                continue;
             kvro_item_traverse((item_func)__item_print_cb, i, NULL);
         }
     }

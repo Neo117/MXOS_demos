@@ -83,6 +83,14 @@ struct in6_addr {
 #define s6_addr  un.u8_addr
 };
 
+/** IPv6 address */
+typedef struct ip6_addr ip6_addr_t;
+/** IP6_ADDR_ANY can be used as a fixed IPv6 address
+ *  for the wildcard
+ */
+extern const ip6_addr_t ip6_addr_any;
+#define IP6_ADDR_ANY         ((ip6_addr_t *)&ip6_addr_any)
+
 /* members are in network byte order */
 struct sockaddr {
     uint8_t sa_len;
@@ -218,6 +226,9 @@ typedef enum {
     SO_NO_CHECK           = 0x100a      /**< Don't create UDP checksum. */
 
 } SOCK_OPT_VAL;
+
+#define IPV6_CHECKSUM       7  /* RFC3542: calculate and insert the ICMPv6 checksum for raw sockets. */
+#define IPV6_V6ONLY         27 /* RFC3493: boolean control to restrict AF_INET6 sockets to IPv6 communications only. */
 
 
 /**

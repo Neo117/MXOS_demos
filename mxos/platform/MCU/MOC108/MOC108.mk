@@ -56,10 +56,6 @@ endif
 $(NAME)_COMPONENTS += FreeRTOS
 $(NAME)_COMPONENTS += LwIP
 
-ifneq ($(MXOS_DISABLE_WOLFSSL), 1)
-$(NAME)_COMPONENTS += wolfSSL
-endif
-
 ifdef TOOLCHAIN_NAME
 ifneq ($(wildcard $(CURDIR)peripherals.$(HOST_ARCH).$(TOOLCHAIN_NAME).release.a),)
 $(NAME)_PREBUILT_LIBRARY := peripherals.$(HOST_ARCH).$(TOOLCHAIN_NAME).release.a

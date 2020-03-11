@@ -14,6 +14,7 @@ THUMB_GNU_ARCH_LIST := Cortex-M0 \
                        Cortex-M4 \
                        Cortex-M4F\
                        Cortex-M33\
+                       Cortex-M33F\
                        Cortex-R3 \
                        Cortex-M0plus
 
@@ -27,10 +28,14 @@ HOST_INSTRUCTION_SET := THUMB
 endif
 
 TOOLCHAIN_PREFIX  := arm-none-eabi-
-ifeq ($(HOST_ARCH),Cortex-M33)
+ifneq ($(filter $(HOST_ARCH),Cortex-M33F Cortex-M33),)
+TOOLCHAIN_VERSION := 7-2017-q4-major
+else
+ifneq ($(filter $(HOST_MCU_FAMILY),mx1270),)
 TOOLCHAIN_VERSION := 7-2017-q4-major
 else
 TOOLCHAIN_VERSION := 5_4-2016q2-20160622
+endif
 endif
 
 ifeq ($(HOST_OS),Win32)
@@ -196,6 +201,13 @@ CPU_CFLAGS   := -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=softfp -mfpu=
 CPU_CXXFLAGS := -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=softfp -mfpu=fpv5-sp-d16
 CPU_ASMFLAGS := -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=softfp -mfpu=fpv5-sp-d16
 CPU_LDFLAGS  := -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=softfp -mfpu=fpv5-sp-d16 
+endif
+
+ifeq ($(HOST_ARCH),Cortex-M33F)
+CPU_CFLAGS   := -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16
+CPU_CXXFLAGS := -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16
+CPU_ASMFLAGS := -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16
+CPU_LDFLAGS  := -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16 
 endif
 
 ifeq ($(HOST_ARCH),Cortex-R4)

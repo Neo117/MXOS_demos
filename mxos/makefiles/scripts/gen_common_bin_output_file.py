@@ -67,6 +67,8 @@ def main():
     if gap_szie > 0:
         output_file.seek(os.path.getsize(OUTPUT_FILE))
         output_file.write('\xFF'*gap_szie)
+    else:
+        output_file.seek(OFFSET)
 
     output_file.write(input)
     input_file.close()

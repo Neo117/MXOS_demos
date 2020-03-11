@@ -42,7 +42,8 @@ $(NAME)_SOURCES := \
 appstart.c \
 libc_stub.c \
 ../../../MXOS/RTOS/mxos_rtos_common.c \
-../../../MXOS/net/LwIP/mxos/mxos_network.c
+../../../MXOS/net/LwIP/mxos/mxos_network.c \
+../../GCC/time_newlib.c
 
 $(NAME)_INCLUDES := \
 ../../../MXOS/RTOS/FreeRTOS/mxos
@@ -65,10 +66,6 @@ mxos/platform/MCU/mx1400/flash_alg.mk \
 mxos/platform/MCU/mx1400/tools/image.mk
 
 GLOBAL_DEFINES += CONFIG_RTL8720C FreeRTOS_VERSION=\"V8.2.0\"
-
-ifneq ($(MXOS_DISABLE_WOLFSSL), 1)
-$(NAME)_COMPONENTS += wolfSSL 
-endif
 
 GLOBAL_LDFLAGS  += \
 -Wl,-wrap,_malloc_r \

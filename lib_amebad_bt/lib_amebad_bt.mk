@@ -1,8 +1,10 @@
 
 NAME := Lib_amebad_bt
 
-$(NAME)_SOURCES += bt.c \
-				   profile/src/client/ancs_client.c \
+$(NAME)_SOURCES += bt.c 
+
+ifneq ($(LIB_AMEBABT_DISABLE_SIMPLE_PROFILE),1)
+$(NAME)_SOURCES += profile/src/client/ancs_client.c \
 				   profile/src/client/bas_client.c \
 				   profile/src/client/gaps_client.c \
 				   profile/src/client/gcs_client.c \
@@ -11,9 +13,14 @@ $(NAME)_SOURCES += bt.c \
 				   profile/src/server/dis.c \
 				   profile/src/server/hids.c \
 				   profile/src/server/simple_ble_service.c 
-					#    profile/src/server/bas.c \
-					#    profile/src/server/hids_kb.c \
-					#    profile/src/server/hids_rmc.c \
+endif
 
-GLOBAL_INCLUDES  := ./ ./gap ./profile/inc ./stack ./profile/inc/client ./profile/inc/server
-
+GLOBAL_INCLUDES  += ./ \
+					./gap \
+					./profile/inc \
+					./stack 
+					
+ifneq ($(LIB_AMEBABT_DISABLE_SIMPLE_PROFILE),1)
+GLOBAL_INCLUDES  += ./profile/inc/client \
+					./profile/inc/server
+endif

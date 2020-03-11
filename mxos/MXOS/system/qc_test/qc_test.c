@@ -81,7 +81,7 @@ static void _qc_test_uart_init( void )
 {
     mhal_uart_config_t config = 
     {
-        .baudrate = MXOS_APP_UART_BAUDRATE,
+        .baudrate = MXOS_QC_UART_BAUDRATE,
         .data_width = DATA_WIDTH_8BIT,
         .parity = NO_PARITY,
         .stop_bits = STOP_BITS_1,

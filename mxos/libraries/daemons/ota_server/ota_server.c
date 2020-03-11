@@ -226,8 +226,15 @@ static void ota_server_progress_set( OTA_STATE_E state )
 {
     float progress = 0.00;
 
-    progress =(float) ota_server_context->download_state.download_begin_pos / ota_server_context->download_state.download_len;
-    progress = progress*100;
+    if(ota_server_context->download_state.download_len == 0)
+    {
+        progress = 0.0;
+    }else
+    {
+        progress =(float) ota_server_context->download_state.download_begin_pos / ota_server_context->download_state.download_len;
+        progress = progress*100;
+    }
+
     if(  ota_server_context->ota_server_cb != NULL )
         ota_server_context->ota_server_cb(state, progress);
 }
@@ -300,9 +307,16 @@ static void ota_server_thread( void * arg )
 #if OTA_DEBUG
                     PrintHTTPHeader( httpHeader );
 #endif
-                    err = ota_server_read_body( httpHeader );/*get body data*/
-                    require_noerr( err, RECONNECTED );
-                    /*get data and print*/
+                    if ( (httpHeader->statusCode == 200) || (httpHeader->statusCode == 206) )
+                    {
+                        err = ota_server_read_body( httpHeader );/*get body data*/
+                        require_noerr( err, RECONNECTED );
+                    } else
+                    {
+                        ota_server_log( "[ERROR]http response error, statusCode = %d", httpHeader->statusCode );
+                        ota_server_progress_set( OTA_FAIL );
+                        goto DELETE;
+                    }
                     break;
                 case EWOULDBLOCK:
                 case kNoSpaceErr:
@@ -326,7 +340,8 @@ static void ota_server_thread( void * arg )
             if ( memcmp( md5_value_string, ota_server_context->ota_check.md5, OTA_MD5_LENTH ) == 0 ){
                 ota_server_progress_set(OTA_SUCCE);
                 mxos_ota_switch_to_new_fw( ota_server_context->download_state.download_len, crc16 );
-                mxos_system_power_perform( mxos_system_context_get( ), eState_Software_Reset );
+                ota_server_log("ota success, system reboot!");
+                mxos_sys_reboot( );
             }else{
                 ota_server_log("OTA md5 check err, Calculation:%s, Get:%s", md5_value_string, ota_server_context->ota_check.md5);
                 ota_server_progress_set(OTA_FAIL);

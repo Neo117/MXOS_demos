@@ -635,6 +635,7 @@ SECTIONS
 	div_s64 = 0xe1ed;
 	div_u64_rem = 0xe1f5;
 	div_s64_rem = 0xe205;
+	_strchr = 0xe241;
 	COMMPORT_GET_T = 0xe259;
 	COMMPORT_CLEAN_RX = 0xe289;
 	xModemDebugInit = 0xe2a5;

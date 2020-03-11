@@ -20,8 +20,10 @@ $(NAME)_SOURCES := AESUtils.c \
                    URLUtils.c
                    
 # MXOS source codes
-$(NAME)_SOURCES += CheckSumUtils.c \
-                   RingBufferUtils.c \
+ifeq ($(filter $(HOST_MCU_FAMILY),mx1270),)
+$(NAME)_SOURCES += CheckSumUtils.c
+endif
+$(NAME)_SOURCES += RingBufferUtils.c \
                    StringUtils.c
                    
 $(NAME)_COMPONENTS += utilities/json_c

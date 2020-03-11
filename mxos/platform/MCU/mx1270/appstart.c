@@ -59,6 +59,46 @@ uint8_t mxos_get_last_reset_reason(void)
     }
 }
 
+int stdio_break_in(void)
+{
+    uint8_t c, n;
+    int i, mfg=0;
+
+    mhal_uart_config_t config = {
+        .baudrate = MXOS_LOG_UART_BAUDRATE,
+        .data_width = DATA_WIDTH_8BIT,
+        .parity = NO_PARITY,
+        .stop_bits = STOP_BITS_1,
+        .flow_control = FLOW_CONTROL_DISABLED,
+        .buffersize = 1024,
+    };
+
+    mhal_uart_pinmux_t pinmux = {
+        .tx = MXOS_APP_UART_TXD,
+        .rx = MXOS_APP_UART_RXD,
+        .rts = MODULE_PIN_NC,
+        .cts = MODULE_PIN_NC,
+    };
+
+    mhal_uart_open(MXOS_APP_UART, &config, &pinmux);
+    
+    for(i=0; i<10; i++) {
+        n = 1;
+      if (kNoErr != mhal_uart_read( MXOS_APP_UART, &c, &n, 10)) 
+        continue;
+
+    if (c == '#'){
+		mfg++;
+		if (mfg > 1)
+          return 1; 
+      }
+    }
+
+    mhal_uart_close(MXOS_APP_UART);
+
+    return 0;
+}
+
 static void usrapp_thread(void *arg)
 {
     mxos_debug_enabled = 1;
@@ -93,6 +133,12 @@ static void usrapp_thread(void *arg)
         }
     }
 
+    if(stdio_break_in() == 1)
+    {
+        mxos_system_qc_test();
+        mos_thread_delete(NULL);
+    }
+
     mos_worker_thread_new(MOS_WORKER_THREAD, MOS_APPLICATION_PRIORITY, 2048, 16);
 
     main(0, NULL);
@@ -102,11 +148,6 @@ static void usrapp_thread(void *arg)
 
 void mxos_app_init(void)
 {
-    vfs_init();
-    ulog_init("A");
-    vfs_device_init();
-    aos_loop_init();
-
     mos_thread_new(32, "user app thread", usrapp_thread, MXOS_DEFAULT_APPLICATION_STACK_SIZE, NULL);
 
     aos_loop_run();
@@ -125,7 +166,8 @@ typedef struct
     uint16_t crc;
 } ota_hdr_t;
 
-typedef struct {
+typedef struct
+{
     unsigned short crc;
 } ota_crc16_ctx;
 
@@ -135,68 +177,76 @@ static unsigned short update_crc16(unsigned short crcIn, unsigned char byte)
     unsigned int crc = crcIn;
     unsigned int in = byte | 0x100;
 
-    do {
+    do
+    {
         crc <<= 1;
         in <<= 1;
-        if (in & 0x100) {
+        if (in & 0x100)
+        {
             ++crc;
         }
-        if (crc & 0x10000) {
+        if (crc & 0x10000)
+        {
             crc ^= 0x1021;
         }
     } while (!(in & 0x10000));
     return crc & 0xffffu;
 }
 
-void ota_crc16_init(ota_crc16_ctx *inCtx)
+void mxos_ota_crc16_init(ota_crc16_ctx *inCtx)
 {
     inCtx->crc = 0;
 }
 
-void ota_crc16_update(ota_crc16_ctx *inCtx, const void *inSrc, size_t inLen)
+void mxos_ota_crc16_update(ota_crc16_ctx *inCtx, const void *inSrc, size_t inLen)
 {
-    const unsigned char *src = (const unsigned char *) inSrc;
+    const unsigned char *src = (const unsigned char *)inSrc;
     const unsigned char *srcEnd = src + inLen;
-    while ( src < srcEnd ) {
+    while (src < srcEnd)
+    {
         inCtx->crc = update_crc16(inCtx->crc, *src++);
     }
 }
 
-void ota_crc16_final(ota_crc16_ctx *inCtx, unsigned short *outResult )
+void mxos_ota_crc16_final(ota_crc16_ctx *inCtx, unsigned short *outResult)
 {
     inCtx->crc = update_crc16(inCtx->crc, 0);
     inCtx->crc = update_crc16(inCtx->crc, 0);
     *outResult = inCtx->crc & 0xffffu;
 }
 
-int ota_image_crc(uint32_t image_size)
+int mxos_ota_image_crc(uint32_t image_size)
 {
     uint16_t crcout;
     uint32_t filelen, flashaddr, len = 0, left;
     ota_crc16_ctx ctx = {0};
-    uint8_t* tmpbuf;
+    uint8_t *tmpbuf;
 
-    tmpbuf = (uint8_t*)malloc(1024);
+    tmpbuf = (uint8_t *)malloc(1024);
 
     filelen = image_size;
 
-    ota_crc16_init(&ctx);
-    
+    mxos_ota_crc16_init(&ctx);
+
     flashaddr = 0;
     left = filelen;
 
-    while (left > 0) {
-        if (left > 1024) {
+    while (left > 0)
+    {
+        if (left > 1024)
+        {
             len = 1024;
-        } else {
+        }
+        else
+        {
             len = left;
         }
         left -= len;
-        mhal_flash_read(MODULE_PARTITION_OTA_TEMP, &flashaddr, (uint8_t*)tmpbuf, len);
-        ota_crc16_update(&ctx, tmpbuf, len);
+        mhal_flash_read(MODULE_PARTITION_OTA_TEMP, &flashaddr, (uint8_t *)tmpbuf, len);
+        mxos_ota_crc16_update(&ctx, tmpbuf, len);
     }
 
-    ota_crc16_final(&ctx, &crcout);
+    mxos_ota_crc16_final(&ctx, &crcout);
 
     return crcout;
 }
@@ -204,13 +254,13 @@ int ota_image_crc(uint32_t image_size)
 merr_t mxos_ota_switch(uint32_t ota_len, uint16_t ota_crc)
 {
     uint32_t addr = 0;
-    
-    if(ota_len <= 16)
-        return kGeneralErr;
-    ota_len -=16;
 
-    ota_crc = ota_image_crc(ota_len);
-    
+    if (ota_len <= 16)
+        return kGeneralErr;
+    ota_len -= 16;
+
+    ota_crc = mxos_ota_image_crc(ota_len);
+
     ota_hdr_t ota_hdr =
         {
             .dst_adr = 0xA000,
@@ -218,7 +268,6 @@ merr_t mxos_ota_switch(uint32_t ota_len, uint16_t ota_crc)
             .siz = ota_len,
             .crc = ota_crc,
         };
-
 
     mhal_flash_erase(MODULE_PARTITION_INFO, addr, sizeof(ota_hdr));
 

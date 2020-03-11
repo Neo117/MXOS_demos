@@ -42,7 +42,8 @@ $(NAME)_SOURCES := \
 appstart.c \
 libc_stub.c \
 ../../../MXOS/RTOS/mxos_rtos_common.c \
-../../../MXOS/net/LwIP/mxos/mxos_network.c
+../../../MXOS/net/LwIP/mxos/mxos_network.c \
+../../GCC/time_newlib.c
 
 $(NAME)_INCLUDES := \
 ../../../MXOS/RTOS/FreeRTOS/mxos
@@ -54,11 +55,8 @@ libraries/lib_platform.a \
 libraries/lib_wlan.a \
 libraries/lib_wps.a \
 libraries/lib_p2p.a \
-libraries/lib_rtlstd.a
-
-ifneq ($(MXOS_DISABLE_WOLFSSL), 1)
-$(NAME)_COMPONENTS += wolfSSL
-endif
+libraries/lib_rtlstd.a \
+libraries/lib_eap.a
 
 DEFAULT_LINK_SCRIPT := linkscripts/rlx8711B-symbol-v02-img2_xip1.ld
 
@@ -66,7 +64,8 @@ EXTRA_TARGET_MAKEFILES +=  \
 mxos/platform/MCU/mx1290/flash_alg.mk \
 mxos/platform/MCU/mx1290/tools/image.mk
 
-GLOBAL_DEFINES += CONFIG_MX1290 FreeRTOS_VERSION=\"V8.2.0\"
+GLOBAL_DEFINES += CONFIG_MX1290 FreeRTOS_VERSION=\"V8.2.0\" MXOS_QC_UART_BAUDRATE=921600
+
 
 
 GLOBAL_LDFLAGS  += \

@@ -59,6 +59,14 @@ enum
   SECURITY_TYPE_WPA2_MIXED, /**< WPA2 /w AES or TKIP */
   SECURITY_TYPE_AUTO,       /**< It is used when calling @ref mwifi_connect, MXOS read security type from scan result. */
 };
+
+typedef enum {
+	EAP_TYPE_TLS = 13 /* RFC 2716 */,
+	EAP_TYPE_TTLS = 21 /* RFC 5281 */,
+	EAP_TYPE_PEAP = 25 /* draft-josefsson-pppext-eap-tls-eap-06.txt */,
+} EapType;
+
+
 /**
  * @brief Wi-Fi security type
  */
@@ -84,6 +92,14 @@ typedef struct
   uint8_t channel;           /**< channel of access-point */
   mwifi_security_t security; /**< security of access-point */
 } mwifi_connect_attr_t;
+
+typedef struct
+{
+  uint8_t     eap_type; // support: EAP_TYPE_PEAP, EAP_TYPE_TTLS, EAP_TYPE_TLS
+  const char* rootca;   // the EAP rootca. NULL for don't check the server's certificate
+  const char *client_cert; // my cert, only need this if the server need check the client's certificate. such as EAP_TYPE_TLS mode.
+  const char *client_key;  // my private key. DONOT support encrypted key.
+} mwifi_eap_attr_t;
 
 /** 
  * @brief Soft-AP attributes
@@ -180,6 +196,55 @@ typedef void (*asso_event_handler_t)(char *buf, int buf_len, int flags, void *ha
  * @endcode
  */
 merr_t mwifi_connect(const char *ssid, char *key, int key_len, mwifi_connect_attr_t *attr, mwifi_ip_attr_t *ip);
+
+
+/**
+ * @brief Connect to an Access-Point
+ * @param ssid SSID of the Access-Point
+ * @param identity IDENTITY 
+ * @param password length of the Passphrase or PSK
+ * @param attr extral atrributes of EAP method. NULL for default mode EAP-PEAP.
+ * @param ip Station IP settings, NULL for DHCP mode.
+ * 
+ * @return result
+ * @retval kNoErr sucess
+ * @retval others failure
+ * 
+ * Connect to an AP with WPA enterprise mode
+ * @code
+ * #define SSID "snowyang"
+ * #define IDENTITY "bob"
+ * #define PASS   "hello"
+ * 
+ * mwifi_eap_connect(SSID, USERNAME, PASS, NULL, NULL);
+ * @endcode
+ */
+merr_t mwifi_eap_connect(const char *ssid, char *identity, char *password, mwifi_eap_attr_t *attr, mwifi_ip_attr_t *ip);
+
+/**
+ * @brief Connect to an Access-Point with WPS Push button mode
+ * @return result
+ * @retval kNoErr sucess
+ * @retval others failure
+ * 
+ * @code
+ * mwifi_wps_connect();
+ * @endcode
+ */
+merr_t mwifi_wps_connect(void);
+
+/**
+ * @brief STOP WPS 
+ * @return result
+ * @retval kNoErr sucess
+ * @retval others failure
+ * 
+ * @code
+ * mwifi_wps_stop();
+ * @endcode
+ */
+merr_t mwifi_wps_stop(void);
+
 /**
  * @brief Add extra Access-Point to connect list
  * @param ssid SSID of the Access-Point

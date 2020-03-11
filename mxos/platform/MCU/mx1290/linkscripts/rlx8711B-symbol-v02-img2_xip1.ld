@@ -108,7 +108,7 @@ SECTIONS
 	{
 		*(.bfsram.data*)
 		*(.heap.stdlib*)
-		__heap_start__ = . + 1K;
+		__heap_start__ = . + 2K;
 		__heap_end__ = ORIGIN(MSP_RAM);
 	} > BD_RAM
 

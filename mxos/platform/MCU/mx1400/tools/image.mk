@@ -32,3 +32,5 @@ endif
 	$(RM) $(USER_BIN_DIR)\all.bin
 	$(RM) $(USER_BIN_DIR)\firmware_is.bin
 	$(RM) $(USER_BIN_DIR)\partition.bin
+	$(RM) $(USER_BIN_DIR)\application_is.axf
+	$(RM) $(USER_BIN_DIR)\bootloader.bin

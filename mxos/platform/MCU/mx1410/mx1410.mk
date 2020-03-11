@@ -1,16 +1,12 @@
 NAME := MX1410
 
 # Host architecture is Cortex-M4
-HOST_ARCH := Cortex-M33
-
-ifneq ($(MXOS_DISABLE_WOLFSSL), 1)
-$(NAME)_COMPONENTS += wolfSSL 
-endif
+HOST_ARCH := Cortex-M33F
 
 $(NAME)_PREBUILT_LIBRARY := \
 image/objs.a \
 image/lib_wlan.a \
-image/cmse_implib.lib \
+image/lib_cmsis_dsp.a \
 image/btgap.a
 
 DEFAULT_LINK_SCRIPT := rlx8721d_img2_ns.ld
@@ -19,10 +15,10 @@ $(NAME)_SOURCES := ../../../MXOS/net/LwIP/mxos/mxos_network.c ../../../MXOS/RTOS
 				   
 $(NAME)_INCLUDES := ../../../MXOS/RTOS/FreeRTOS/mxos
 
-GLOBAL_CFLAGS	+= -ffunction-sections -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=softfp -mfpu=fpv5-sp-d16 -g -gdwarf-3 -nostartfiles -nodefaultlibs -nostdlib -O2 -D__FPU_PRESENT -gdwarf-3 -fstack-usage -fdata-sections -nostartfiles -nostdlib -Wall -Wpointer-arith -Wno-write-strings -Wno-maybe-uninitialized -Wextra -Wno-implicit-fallthrough
+GLOBAL_CFLAGS	+= -ffunction-sections -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16 -g -gdwarf-3 -nostartfiles -nodefaultlibs -nostdlib -O2 -D__FPU_PRESENT -gdwarf-3 -fstack-usage -fdata-sections -nostartfiles -nostdlib -Wall -Wpointer-arith -Wno-write-strings -Wno-maybe-uninitialized -Wextra -Wno-implicit-fallthrough
 GLOBAL_CXXFLAGS	+= $(CPU_CFLAGS)
 GLOBAL_ASMFLAGS	+= $(CPU_CFLAGS)
-GLOBAL_LDFLAGS	+= -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=softfp -mfpu=fpv5-sp-d16 -nostartfiles -specs nosys.specs -Wl,--gc-sections -Wl,--warn-section-align -Wl,--build-id=none -Wl,--no-enum-size-warning -Wl,--warn-common -lm -lstdc++
+GLOBAL_LDFLAGS	+= -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16 -nostartfiles -specs nosys.specs -Wl,--gc-sections -Wl,--warn-section-align -Wl,--build-id=none -Wl,--no-enum-size-warning -Wl,--warn-common -lm -lstdc++
 GLOBAL_LDFLAGS	+= -L mxos/platform/MCU/mx1410
 
 GLOBAL_INCLUDES := . ../include ../../ ../../../MXOS/RTOS/

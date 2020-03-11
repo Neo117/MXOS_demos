@@ -72,10 +72,6 @@ $(NAME)_COMPONENTS += utilities
 $(NAME)_COMPONENTS += FreeRTOS
 $(NAME)_COMPONENTS += LwIP
 
-ifneq ($(MXOS_DISABLE_WOLFSSL), 1)
-$(NAME)_COMPONENTS += wolfSSL
-endif
-
 # Source files
 $(NAME)_SOURCES := ../../$(HOST_ARCH)/crt0_$(TOOLCHAIN_NAME).c \
                    ../../$(HOST_ARCH)/platform_core.c \
